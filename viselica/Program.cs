@@ -1,81 +1,57 @@
 ﻿using System;
-using System.Threading;
 
 namespace viselica
 {
-    struct Game
+    class Program
     {
-        public string word;
-        public char[] stars;
-        public int count;
+        static string word;
+        const int maxTrying = 11;
 
-       internal class Program
-    {
-            private static Game game;
-            static void Main(string[] args)
+        static void Main(string[] args)
         {
-                const int maxCount = 15;
-
-                Console.Write("Введите слово:");
-                string str = Console.ReadLine().ToLower();
-                game.word = str;
-                game.stars = new string('*', str.Length).ToCharArray();
-
-                char symbol = ' ';
-                Thread th = new Thread(() =>
-                {
-                    while (true)
-                    {
-                        Console.WriteLine(new string('-', 30));
-                        NewWord(symbol);
-                        Console.WriteLine("Загаданное слово " + string.Join("", game.stars));
-                        Console.WriteLine(new string('-', 30));
-                        Console.WriteLine("Количество попыток {0},У Вас еще осталось {1}", game.count, maxCount - game.count);
-                        if (game.word.Equals(string.Join("", game.stars)))
-                        {
-                            Console.WriteLine("You are win!");
-                            return;
-
-                        }
-                        if (game.count == maxCount)
-                        {
-                            Console.WriteLine("You are lose!");
-                            return;
-                        }
-
-                        Thread.Sleep(200);
-                        Console.Clear();
-                    }
-                });
-                th.Start();
-                Thread th2 = new Thread(() =>
-                {
-                    while (true)
-                    {
-                        symbol = (Char.ToLower(Console.ReadKey().KeyChar));
-                        game.count++;
-                        Thread.Sleep(300);
-                    }
-                });
-                th2.IsBackground = true;
-                th2.Start();
-                Console.ReadKey(true);
-
-            }
-
-            static void NewWord(char s)
+            while (true)
             {
-
-                for (int i = 0; i < game.word.Length; i++)
+                do
                 {
-                    if (game.word[i] == s)
-                    {
-                        game.stars[i] = s;
-                    }
+                    Console.WriteLine("Загадайте слово");
+                    word = Console.ReadLine();
+                } while (word.Length==0||word.Contains(' '));
+                Console.Clear();
+                Console.WriteLine("Игра началась!");
+
+                for (int i = maxTrying; i > 0; i--)
+                {
+                     char c = ReadCharFromConsole();
+                    
+                    Console.WriteLine("Количество оставшихся попыток:" + (i-1)); 
+                    //Console.WriteLine(c); 
                 }
+
+                Console.WriteLine("Проигрыш");
+                Console.WriteLine("Загаданное слово:" + word);
+                Console.ReadLine();
+
             }
+        }
+
+        static char ReadCharFromConsole()
+        {
+            Console.WriteLine("Введите символ:");
+            char c = (char)0;
+            do
+            {
+                string str = Console.ReadLine();
+                if (str.Length != 1)
+                {
+                    Console.WriteLine("Введите один символ:");
+                }
+                else
+                {
+                    c = str[0];
+                }
+            } while (c == 0);
+
+            return c;
         }
     }
 }
-    
-
